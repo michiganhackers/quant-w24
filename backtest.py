@@ -6,11 +6,9 @@ import matplotlib.pyplot as plt
 # class to contain testing and visualization functions
 class backtest:
 
-
     data = {'Ticker': [],
         'Amount': [],
         'Date': []}
-    # trades = []
     portfolioVal = []
 
     def __init__(self) -> None:
@@ -20,22 +18,13 @@ class backtest:
     # step and record relevant information, including trades and the
     # value of the portfolio at each step
     def run(self, algo):
-        # print(algo.ticker.index)
-        for day in algo.ticker.index:#change this
-            
+        for day in algo.ticker.index:     
             algo.decide("AAPL", day)
-
             self.portfolioVal.append(algo.getCurrVal(day))
-            # print(algo.getCurrVal(day))
-            
-        # print("End portfolio value: ", algo.getCurrVal(day))
-            #algo.buy("AAPL")
-        
 
     def graphReturns(self, algorithm): 
         df = pd.DataFrame(algorithm.portfolio_vals)
-        # print(df)
-        # plt.figure(figsize=(10, 6))
+
         plt.subplot(2,2,1)
         plt.plot(df.index, df[0], label='Close Price', color='blue')
         plt.title('Portflio values ')
@@ -43,28 +32,23 @@ class backtest:
         plt.ylabel('Price (USD)')
         plt.legend()
         plt.grid(True)
-        # plt.show()
-        
 
     def graphRSI(self, algorithm): 
         df = pd.DataFrame(algorithm.RSI_vals)
-        # print(df)
-        # plt.figure(figsize=(10, 6))
+
         plt.subplot(2,2,2)
         plt.plot(df.index, df[0], label='Close Price', color='blue')
         plt.title('RSI Values')
         plt.xlabel('Date')
         plt.ylabel('Price (USD)')
         plt.legend()
-        plt.grid(True)
-        # plt.show()
-        
+        plt.grid(True)     
 
     def calculateVol(self, algorithm):
         df = pd.DataFrame(algorithm.portfolio_vals)
         returns = df.pct_change()
         vols = (returns.std())
-        # plt.figure(figsize=(10, 6))
+
         plt.subplot(2,2,3)
         plt.plot(df.index, returns, label='Close Price', color='blue')
         plt.title('Daily Returns')
@@ -72,10 +56,6 @@ class backtest:
         plt.ylabel('Price (USD)')
         plt.legend()
         plt.grid(True)
-        # plt.show()
-        # print(vols.columns[0])
-
-        
 
     def calculate_tot_returns(self, algorithm):
         total_returns = []
@@ -87,10 +67,9 @@ class backtest:
         for day_return in returns[0]:
             total = total * (1 + day_return)
             total_returns.append(total)
-            # print("day_return", day_return)
 
         df2 = pd.DataFrame(total_returns)
-        # print(df2)
+        
         plt.subplot(2,2,4)
         plt.plot(df2.index, df2[0], label='Close Price', color='blue')
         plt.title('Normalized Returns')
@@ -98,9 +77,6 @@ class backtest:
         plt.ylabel('Price (USD)')
         plt.legend()
         plt.grid(True)
-        
-
-
 
     def calculate_market_return(self, algorithm):
         start_val = algorithm.market_ticker.iloc[0]["Close"]

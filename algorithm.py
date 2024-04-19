@@ -8,13 +8,11 @@ from datetime import datetime, timedelta
 class algorithm:
     portfolio = 0 #list of ticker, amt
     cash = 1000000
-    ticker_symbols = "AAPL"
-    start_date = "2021-12-13"
+    start_date = "2021-12-13" #starts 14 trading days early to calculate the moving average ahead of time
     end_date = "2023-01-01"
-    ticker = yf.download(ticker_symbols, start_date, end_date, progress=False)
     SPY = "SPY"
     market_ticker = yf.download(SPY, start_date, end_date, progress=False)
-    fourteen_day_ma = [] #just AAPL for now
+    fourteen_day_ma = []
     trades = []
     RSI_vals = []
     return_vals = []
@@ -23,44 +21,28 @@ class algorithm:
     prev_price = 0
     today_return = 0
 
-    def __init__(self):
-        #put first 14 values into RSI list
-        # average_gain()
-        # set_rsi()
-
-        # first_day = "2022-12-13"
-        # for i in range(14):
-        #     price_on_day = self.ticker.loc[day]["Close"]
-        #     #iterate through the table
-        #     fourteen_day_ma += price_on_day
-
-
+    def __init__(self, tick):
+        self.ticker_symbols = tick
+        self.ticker = yf.download(self.ticker_symbols, self.start_date, self.end_date, progress=False)
         return
-        
-        # ticker = yf.download(tick, start_date, end_date)
-        
 
     def buy(self, tick, day):
-        # print(self.ticker.loc[day]["Close"])
         price_on_day = self.ticker.loc[day]["Close"]
         
-        buy_amt = self.cash / price_on_day #buy as many as we can
+        buy_amt = self.cash / price_on_day
         self.portfolio += buy_amt
         self.cash -= buy_amt * price_on_day
         data = {"AAPL", buy_amt, day}
         self.trades.append(data)
 
-    def sell(self, tick, day):
-        # print(ticker[day])
-        # print(self.ticker.loc[day])   
+    def sell(self, tick, day): 
         price_on_day = self.ticker.loc[day]["Close"]
 
-        sell_amt = self.portfolio #selling all
+        sell_amt = self.portfolio
         self.portfolio -= sell_amt
         self.cash += sell_amt * price_on_day
         data = {"AAPL", -sell_amt, day}
         self.trades.append(data)
-        
 
     def calculate_gain(self):
         total_gain = 0
@@ -69,8 +51,7 @@ class algorithm:
                 total_gain += i
         if self.RSI_day_count > 14:
             self.RSI_day_count = 14
-        # print("Total gain: ", total_gain)
-        # print("Average gain: ", total_gain / self.RSI_day_count)
+
         return total_gain / self.RSI_day_count
 
     def calculate_loss(self):
@@ -80,20 +61,15 @@ class algorithm:
                 total_loss += i
         if self.RSI_day_count > 14:
             self.RSI_day_count = 14
-        return -(total_loss / self.RSI_day_count) #fix later: divide by zero issue
+        return -(total_loss / self.RSI_day_count)
 
     def RSI_val(self, day):
-        # push/pop values on day
         self.fourteen_day_ma.append(self.today_return - 1) # -1 for changing to excess return
         if self.RSI_day_count >= 14:
             self.fourteen_day_ma.pop(0)
         avg_gain = self.calculate_gain()
-        # print(avg_gain)
         avg_loss = self.calculate_loss()
-        # print(avg_loss)
-        # print(avg_gain/avg_loss)
-        # print(100 - (100 / (1 + avg_gain/avg_loss)))
-        return 100 - (100 / (1 + avg_gain/avg_loss))
+        return 100 - (100 / (1 + avg_gain/avg_loss)) #known divide by zero issue
 
     def getCurrVal(self, day):
         price_on_day = self.ticker.loc[day]["Close"]
