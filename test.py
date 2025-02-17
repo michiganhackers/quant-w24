@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import yfinance as yf
 import pandas as pd
+import matplotlib
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 print("Hello")
@@ -36,4 +38,4 @@ plt.xlabel('Date')
 plt.ylabel('Price (USD)')
 plt.legend()
 plt.grid(True)
-#plt.show()
+plt.show()
