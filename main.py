@@ -8,6 +8,8 @@ import sys
 
 from backtest import backtest
 from algorithm import algorithm
+# TODO: Comment out the above line and use the line below to use your algorithm
+# from my_algorithm import algorithm
 
 #do python main.py <ticker> to run this!
 tester = backtest()

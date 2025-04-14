@@ -46,9 +46,7 @@ class algorithm:
 
     def calculate_gain(self):
         total_gain = 0
-        for i in self.fourteen_day_ma:
-            if i > 0:
-                total_gain += i
+        total_gain = self.fourteen_day_ma[self.fourteen_day_ma > 0].sum()
         if self.RSI_day_count > 14:
             self.RSI_day_count = 14
 
